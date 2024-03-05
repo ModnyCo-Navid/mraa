@@ -310,7 +310,7 @@ mraa_gpio_init(int pin)
         }
     }
     if (board->adv_func->mux_init_reg) {
-        if(board->adv_func->mux_init_reg(pin, MUX_REGISTER_MODE_GPIO) != MRAA_SUCCESS) {
+        if (board->adv_func->mux_init_reg(pin, MUX_REGISTER_MODE_GPIO) != MRAA_SUCCESS) {
             syslog(LOG_ERR, "gpio%i: init: unable to setup multiplex register", pin);
             return NULL;
         }
@@ -414,7 +414,7 @@ mraa_gpio_chardev_init(int pins[], int num_pins)
         }
 
         if (board->adv_func->mux_init_reg) {
-            if(board->adv_func->mux_init_reg(pins[i], MUX_REGISTER_MODE_GPIO) != MRAA_SUCCESS) {
+            if (board->adv_func->mux_init_reg(pins[i], MUX_REGISTER_MODE_GPIO) != MRAA_SUCCESS) {
                 syslog(LOG_ERR, "[GPIOD_INTERFACE]: init: unable to setup mux register for pin %d", pins[i]);
                 mraa_gpio_close(dev);
                 return NULL;
@@ -646,6 +646,7 @@ mraa_gpio_chardev_wait_interrupt(int fds[], int num_fds, mraa_gpio_events_t even
     for (int i = 0; i < num_fds; ++i) {
         if (pfd[i].revents & POLLIN) {
             read(fds[i], &event_data, sizeof(event_data));
+            fprintf(stderr, "event: %d\n", event_data.id);
             events[i].id = i;
             events[i].timestamp = event_data.timestamp;
         } else
@@ -1231,7 +1232,7 @@ mraa_gpio_chardev_dir(mraa_gpio_context dev, mraa_gpio_dir_t dir)
 }
 
 static mraa_result_t
-gpio_sysfs_read_dir(mraa_gpio_context dev, int dir_fd, mraa_gpio_dir_t *dir)
+gpio_sysfs_read_dir(mraa_gpio_context dev, int dir_fd, mraa_gpio_dir_t* dir)
 {
     char value[5];
     int rc;

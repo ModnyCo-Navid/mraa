@@ -13,7 +13,7 @@
 #include <string.h>
 #include <sys/mman.h>
 
-const char* radxa_cm3i_serialdev[MRAA_RADXA_CM3I_UART_COUNT] = { "/dev/ttyS0", "/dev/ttyS5" };
+const char* radxa_cm3i_serialdev[MRAA_RADXA_CM3I_UART_COUNT] = { "/dev/ttyS0", "/dev/ttyS2", "/dev/ttyS5" };
 
 void
 mraa_radxa_cm3i_pininfo(mraa_board_t* board, int index, int gpio_chip, int gpio_line, mraa_pincapabilities_t pincapabilities_t, char* pin_name)
@@ -66,9 +66,11 @@ mraa_radxa_cm3i()
     b->uart_dev_count = MRAA_RADXA_CM3I_UART_COUNT;
     b->def_uart_dev = 0;
     b->uart_dev[0].index = 0;
-    b->uart_dev[1].index = 5;
+    b->uart_dev[1].index = 2;
+    b->uart_dev[2].index = 5;
     b->uart_dev[0].device_path = (char*) radxa_cm3i_serialdev[0];
     b->uart_dev[1].device_path = (char*) radxa_cm3i_serialdev[1];
+    b->uart_dev[2].device_path = (char*) radxa_cm3i_serialdev[2];
 
     // I2C
     b->i2c_bus_count = MRAA_RADXA_CM3I_I2C_COUNT;

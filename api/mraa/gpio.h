@@ -42,13 +42,13 @@
 extern "C" {
 #endif
 
-#include <stdio.h>
-#include <pthread.h>
 #include "common.h"
+#include <pthread.h>
+#include <stdio.h>
 
 #if defined(SWIGJAVA) || defined(JAVACALLBACK)
 #include <jni.h>
-void mraa_java_isr_callback(void *args);
+void mraa_java_isr_callback(void* args);
 #endif
 
 /**
@@ -112,7 +112,8 @@ typedef long long unsigned int mraa_timestamp_t;
  * Gpio event object
  */
 typedef struct {
-    int id; /**< id of event */
+    int id;                     /**< id of event */
+    mraa_gpio_edge_t edge;      /**< edge of the event */
     mraa_timestamp_t timestamp; /**< timestamp */
 } mraa_gpio_event;
 
@@ -217,7 +218,7 @@ mraa_result_t mraa_gpio_dir(mraa_gpio_context dev, mraa_gpio_dir_t dir);
  * @param dir The address where to store the Gpio(s) direction
  * @return Result of operation
  */
-mraa_result_t mraa_gpio_read_dir(mraa_gpio_context dev, mraa_gpio_dir_t *dir);
+mraa_result_t mraa_gpio_read_dir(mraa_gpio_context dev, mraa_gpio_dir_t* dir);
 
 /**
  * Close the Gpio context
@@ -262,8 +263,8 @@ mraa_result_t mraa_gpio_write(mraa_gpio_context dev, int value);
  * number of pins provided to mraa_gpio_init_multi() function.
  *
  * @param dev The Gpio context
- * @param output_values The array provided by the user. It must contain the values intended to be written
- * to the gpio pins, in the same order as the init function.
+ * @param output_values The array provided by the user. It must contain the values intended to be
+ * written to the gpio pins, in the same order as the init function.
  * @return Result of operation
  */
 mraa_result_t mraa_gpio_write_multi(mraa_gpio_context dev, int input_values[]);

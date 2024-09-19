@@ -47,6 +47,10 @@ if (BUILDCPP)
   enable_language (CXX)
   include (CheckCXXCompilerFlag)
 endif ()
+
+set (CMAKE_C_FLAGS "-g ${CMAKE_C_FLAGS}")
+set (CMAKE_CXX_FLAGS "-g ${CMAKE_CXX_FLAGS}")
+
 function (MRAA_SANITIZE_FLAG_NAME OUTPUT_VAR FLAG)
   string (REPLACE "-" "_" SANITIZED_FLAG_NAME "${FLAG}")
   string (REPLACE "/" "_" SANITIZED_FLAG_NAME "${SANITIZED_FLAG_NAME}")

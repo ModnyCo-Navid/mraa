@@ -310,7 +310,7 @@ mraa_gpio_init(int pin)
         }
     }
     if (board->adv_func->mux_init_reg) {
-        if(board->adv_func->mux_init_reg(pin, MUX_REGISTER_MODE_GPIO) != MRAA_SUCCESS) {
+        if (board->adv_func->mux_init_reg(pin, MUX_REGISTER_MODE_GPIO) != MRAA_SUCCESS) {
             syslog(LOG_ERR, "gpio%i: init: unable to setup multiplex register", pin);
             return NULL;
         }
@@ -414,7 +414,7 @@ mraa_gpio_chardev_init(int pins[], int num_pins)
         }
 
         if (board->adv_func->mux_init_reg) {
-            if(board->adv_func->mux_init_reg(pins[i], MUX_REGISTER_MODE_GPIO) != MRAA_SUCCESS) {
+            if (board->adv_func->mux_init_reg(pins[i], MUX_REGISTER_MODE_GPIO) != MRAA_SUCCESS) {
                 syslog(LOG_ERR, "[GPIOD_INTERFACE]: init: unable to setup mux register for pin %d", pins[i]);
                 mraa_gpio_close(dev);
                 return NULL;
@@ -647,6 +647,17 @@ mraa_gpio_chardev_wait_interrupt(int fds[], int num_fds, mraa_gpio_events_t even
         if (pfd[i].revents & POLLIN) {
             read(fds[i], &event_data, sizeof(event_data));
             events[i].id = i;
+            switch (event_data.id) {
+                case GPIOEVENT_EVENT_RISING_EDGE:
+                    events[i].edge = MRAA_GPIO_EDGE_RISING;
+                    break;
+                case GPIOEVENT_EVENT_FALLING_EDGE:
+                    events[i].edge = MRAA_GPIO_EDGE_FALLING;
+                    break;
+                default:
+                    events[i].id = -1;
+                    break;
+            }
             events[i].timestamp = event_data.timestamp;
         } else
             events[i].id = -1;
@@ -1231,7 +1242,7 @@ mraa_gpio_chardev_dir(mraa_gpio_context dev, mraa_gpio_dir_t dir)
 }
 
 static mraa_result_t
-gpio_sysfs_read_dir(mraa_gpio_context dev, int dir_fd, mraa_gpio_dir_t *dir)
+gpio_sysfs_read_dir(mraa_gpio_context dev, int dir_fd, mraa_gpio_dir_t* dir)
 {
     char value[5];
     int rc;
@@ -1467,6 +1478,22 @@ mraa_gpio_read_multi(mraa_gpio_context dev, int output_values[])
 
     if (plat->chardev_capable) {
         memset(output_values, 0, dev->num_pins * sizeof(int));
+
+        if (dev->num_pins == 1 && dev->thread_id != 0) {
+            mraa_gpio_events_t events = mraa_gpio_get_events(dev);
+            if (events[0].id == dev->provided_pins[0]) {
+                if (events[0].edge == MRAA_GPIO_EDGE_RISING) {
+                    output_values[0] = 1;
+                } else if (events[0].edge == MRAA_GPIO_EDGE_FALLING) {
+                    output_values[0] = 0;
+                } else {
+                    return MRAA_ERROR_INVALID_HANDLE;
+                }
+                return MRAA_SUCCESS;
+            }
+            return MRAA_ERROR_INVALID_HANDLE;
+        }
+
 
         mraa_gpiod_group_t gpio_iter;
 

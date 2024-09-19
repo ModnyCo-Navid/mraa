@@ -17,7 +17,7 @@
 #include "mraa/common.hpp"
 #include "mraa/gpio.hpp"
 
-#define GPIO_PIN 6
+#define GPIO_PIN 41
 
 void
 int_handler(void* args)
@@ -33,6 +33,7 @@ main(void)
     //! [Interesting]
     /* initialize GPIO */
     mraa::Gpio gpio(GPIO_PIN);
+    mraa::Gpio gpio1(GPIO_PIN - 2);
 
     /* set GPIO to input */
     status = gpio.dir(mraa::DIR_IN);
@@ -41,13 +42,16 @@ main(void)
         return EXIT_FAILURE;
     }
 
+
     /* configure ISR for GPIO */
     status = gpio.isr(mraa::EDGE_BOTH, &int_handler, NULL);
     if (status != mraa::SUCCESS) {
         printError(status);
         return EXIT_FAILURE;
     }
-
+    sleep(10);
+    int val = gpio.read();
+    std::cout << "Value read: " << val << std::endl;
     /* wait 30 seconds isr trigger */
     sleep(30);
     //! [Interesting]

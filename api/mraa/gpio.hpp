@@ -172,7 +172,7 @@ class Gpio
     Result
     isr(Edge mode, PyObject* pyfunc, PyObject* args)
     {
-        return (Result) mraa_gpio_isr(m_gpio, (mraa_gpio_edge_t) mode, (void (*) (void*)) pyfunc, (void*) args);
+        return (Result) mraa_gpio_isr(m_gpio, (mraa_gpio_edge_t) mode, (void (*)(void*)) pyfunc, (void*) args);
     }
 #elif defined(SWIGJAVASCRIPT)
     static void
@@ -186,7 +186,7 @@ class Gpio
         v8::Local<v8::Value> argv[] = { SWIGV8_INTEGER_NEW(-1) };
 #if NODE_MODULE_VERSION >= 0x000D
         v8::Local<v8::Function> f = v8::Local<v8::Function>::New(v8::Isolate::GetCurrent(), This->m_v8isr);
-#if (V8_MAJOR_VERSION-0) < 4
+#if (V8_MAJOR_VERSION - 0) < 4
         f->Call(SWIGV8_CURRENT_CONTEXT()->Global(), argc, argv);
 #else
         f->Call(SWIGV8_CURRENT_CONTEXT(), SWIGV8_CURRENT_CONTEXT()->Global(), argc, argv);
@@ -271,7 +271,7 @@ class Gpio
     Result
     mode(Mode mode)
     {
-        return (Result )mraa_gpio_mode(m_gpio, (mraa_gpio_mode_t) mode);
+        return (Result) mraa_gpio_mode(m_gpio, (mraa_gpio_mode_t) mode);
     }
     /**
      * Change Gpio direction
@@ -282,7 +282,7 @@ class Gpio
     Result
     dir(Dir dir)
     {
-        return (Result )mraa_gpio_dir(m_gpio, (mraa_gpio_dir_t) dir);
+        return (Result) mraa_gpio_dir(m_gpio, (mraa_gpio_dir_t) dir);
     }
 
     /**
@@ -358,7 +358,7 @@ class Gpio
     Result
     inputMode(InputMode mode)
     {
-        return (Result )mraa_gpio_input_mode(m_gpio, (mraa_gpio_input_mode_t) mode);
+        return (Result) mraa_gpio_input_mode(m_gpio, (mraa_gpio_input_mode_t) mode);
     }
 
     /**
@@ -379,4 +379,4 @@ class Gpio
     v8::Persistent<v8::Function> m_v8isr;
 #endif
 };
-}
+} // namespace mraa
